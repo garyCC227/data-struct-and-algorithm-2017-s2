@@ -1,0 +1,64 @@
+Q1.The mkwords 1000000 3 command produces 857424 distinct words. What is the maximum chain length if a hash table size of 85711 is used? How does the chain length distribution change if the hash table size is 100000? 214283? 400000? 400837? 857144? 857137? 
+
+A1: maximum chain length                 hash table size
+
+		25									 85711
+		36									100000
+		16									214283
+		16									400000
+		12									400837
+		9									857144
+		9									857137
+		
+---------
+A2:partially, for 6 digits prime number from 214283 to 857137, larger prime number decrease the chain length;
+	but, from 85711 to 214283, larger prime number, it increase chain length.
+	
+---------
+Q3:An "optimal" hash table would have all slots occupied and have all chains of length roughly (nwords/nslots);
+
+A3:877756, 894949
+
+-----------------
+Ae:ListLength and hash function are the most costly functions
+
+---------------
+Af:Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 51.40      0.55     0.55  8949493     0.00     0.00  ListLength
+ 19.16      0.76     0.20  2000004     0.00     0.00  hash
+  9.35      0.85     0.10  2000004     0.00     0.00  ListSearch
+  8.41      0.94     0.09  1000000     0.00     0.00  HashTableInsert
+  4.67      0.99     0.05   894949     0.00     0.00  dropList
+  2.34      1.02     0.03  2987456     0.00     0.00  cmp
+  2.34      1.04     0.03                             main
+  0.93      1.05     0.01        1    10.00   560.00  HashTableStats
+  0.93      1.06     0.01        1    10.00    60.00  dropHashTable
+  0.47      1.07     0.01  1000000     0.00     0.00  newItem
+  0.00      1.07     0.00  1000004     0.00     0.00  HashTableSearch
+  0.00      1.07     0.00  1000001     0.00     0.00  ItemGet
+  0.00      1.07     0.00   894949     0.00     0.00  newList
+  0.00      1.07     0.00   857424     0.00     0.00  ListInsert
+  0.00      1.07     0.00   857424     0.00     0.00  dropItem
+  0.00      1.07     0.00        1     0.00     0.00  newHashTable
+
+
+we can improve the Listlength function, by give a good structRep to hold all the lists for the specify key place in hash table like
+
+struct {
+	list head;
+	list tail;
+	int num_of_lists; // number of lists with key in hash table( # chains)
+}
+
+so every times we run ListLength to find the length with key, we can just check out the value "num_of_lists", that is O(1), will save much time. 
+
+
+
+
+
+
+
