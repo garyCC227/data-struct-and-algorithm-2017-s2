@@ -1,0 +1,833 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>Week 10 </title>
+<link href="Week%2010_files/notes.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<p><span class="title">Week 10 </span></p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Deletion from BSTs</span></td><td align="right"><small>1/58</small></td></tr></tbody></table>
+</p><p>
+Insertion into a binary search tree is easy.
+</p><p>
+Deletion from a binary search tree is harder.
+</p><p>
+Four cases to consider ...
+</p><ul>
+<li> empty tree ... new tree is also empty
+</li><li> zero subtrees ... unlink node from parent
+</li><li> one subtree ... replace by child
+</li><li> two subtrees ... replace by successor
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>2/58</small></td></tr></tbody></table>
+</p><p>
+Case 1: value to be deleted is a leaf (zero subtrees)
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del-k-small.png]" src="Week%2010_files/del-k-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>3/58</small></td></tr></tbody></table>
+</p><p>
+Case 1: value to be deleted is a leaf (zero subtrees)
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del1-k-small.png]" src="Week%2010_files/del1-k-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>4/58</small></td></tr></tbody></table>
+</p><p>
+Case 2: value to be deleted has one subtree
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del-p-small.png]" src="Week%2010_files/del-p-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>5/58</small></td></tr></tbody></table>
+</p><p>
+Case 2: value to be deleted has one subtree
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del1-p-small.png]" src="Week%2010_files/del1-p-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>6/58</small></td></tr></tbody></table>
+</p><p>
+Case 3a: value to be deleted has two subtrees
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del-m-small.png]" src="Week%2010_files/del-m-small.png">
+</div><p>
+Replace deleted node by its immediate successor.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>7/58</small></td></tr></tbody></table>
+</p><p>
+Case 3a: value to be deleted has two subtrees
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del2-m-small.png]" src="Week%2010_files/del2-m-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>8/58</small></td></tr></tbody></table>
+</p><p>
+Case 3b: value to be deleted has two subtrees
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del0-m-small.png]" src="Week%2010_files/del0-m-small.png">
+</div><p>
+</p><p>
+Merge subtrees of deleted node; replace deleted node by merged tree.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Deletion from BSTs</span></td><td align="right"><small>9/58</small></td></tr></tbody></table>
+</p><p>
+Case 3b: value to be deleted has two subtrees
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/del1-m-small.png]" src="Week%2010_files/del1-m-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 1: Deletion from Search Trees</span></td><td align="right"><small>10/58</small></td></tr></tbody></table>
+</p><p>
+Implement the deletion function
+</p><p></p><pre>BSTree BSTreeDelete(BSTree t, Key k)
+</pre><p>
+which returns a new tree that does not contain <large><code>k</code></large>.
+</p><p>
+Can be done recursively ...
+</p><p>
+But eventually we need to remove the root of some subtree.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">New Binary Search Tree ADT</span></td><td align="right"><small>11/58</small></td></tr></tbody></table>
+</p><p>
+Now called simply <large><code>Tree</code></large>, and defined as:
+</p><p></p><pre><comment>// Item, Key, Node, Link, Tree types as before</comment>
+
+<comment>// operations on keys</comment>
+#define cmp(k1,k2) ((k1) - (k2))
+#define lt(k1,k2) (cmp(k1,k2) &lt; 0)
+#define eq(k1,k2) (cmp(k1,k2) == 0)
+#define gt(k1,k2) (cmp(k1,k2) &gt; 0)
+
+<comment>// standard tree operations</comment>
+Tree newTree();
+Tree TreeInsert(Tree, Item);
+Tree TreeDelete(Tree, Key);
+int  TreeFind(Tree, Key);
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... New Binary Search Tree ADT</span></td><td align="right"><small>12/58</small></td></tr></tbody></table>
+</p><p>
+</p><p></p><pre><comment>// more standard tree operations</comment>
+void dropTree(Tree);
+void showTree(Tree);
+int  TreeDepth(Tree);
+int  TreeNumNodes(Tree);
+
+<comment>// normally, internal to ADT</comment>
+Link rotateR(Link);
+Link rotateL(Link);
+Tree rebalance(Tree);
+Item *get_ith(Tree, int);
+Tree partition(Tree, int);
+
+Tree insertAtRoot(Tree, Item);
+Tree insertRandom(Tree, Item);
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">TreeLab</span></td><td align="right"><small>13/58</small></td></tr></tbody></table>
+</p><p>
+A shell for manipulating binary search trees
+</p><ul>
+<li> command interpreter (<large><code>tlab.c</code></large>) + Tree ADT (<large><code>Tree.[ch]</code></large>)
+</li></ul>
+Commands:
+<p></p><pre>n N Ord Seed = make a new tree
+i N = insert N into tree
+I N = insert N into tree at root
+d N = delete N from tree
+f N = search for N in tree
+g I = get the i'th element in tree
+p I = partition tree around i'th element
+R = rotate tree right around root
+L = rotate tree left around root
+q = quit
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... TreeLab</span></td><td align="right"><small>14/58</small></td></tr></tbody></table>
+</p><p>
+Usage: &nbsp; <large><code>./tlab  <i>#Nodes</i>  <i>Order</i>  <i>Seed</i></code></large>
+</p><p>
+Possible orders to supply values for insertion
+</p><ul>
+<li> <large><code>A</code></large> = ascending &nbsp; <small>(10 .. N+9)</small>,
+</li><li> <large><code>D</code></large> = descending &nbsp; <small>(N+9 .. 10)</small>
+</li><li> <large><code>P</code></large> = prefix ... builds balanced tree
+</li><li> <large><code>R</code></large> = random ... could do anything ...
+</li></ul>
+<large><code><i>Seed</i></code></large> = starting value for pseudo-random number generator
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 2: Generating Values in Prefix Order</span></td><td align="right"><small>15/58</small></td></tr></tbody></table>
+</p><p>
+Write a function that generates prefix order sequence
+</p><ul>
+<li> generates values in range <large><code>lo</code></large> .. <large><code>hi</code></large>
+</li><li> first is mid-point, second is mid of lower-half, ...
+</li><li> store values in array <large><code>v[0..N-1]</code></large>
+</li></ul>
+Function interface:
+<p></p><pre>void mkprefix(int *v, int N, int lo, int hi)
+</pre><p>
+E.g. &nbsp; <large><code>lo..hi</code></large> = 1..7 &nbsp; &#8658; &nbsp; <large><code>4 2 1 3 6 5 7</code></large>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="section">Balanced Trees</span></td><td align="right"></td></tr></tbody></table>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Balanced Binary Search Trees</span></td><td align="right"><small>17/58</small></td></tr></tbody></table>
+</p><p>
+Goal: build binary search trees which have
+</p><ul>
+<li> minimum depth <i>&#8658;</i> minimum worst case search cost
+</li></ul>
+Perfectly balanced tree with <i>N</i> nodes has
+<ul>
+<li> abs(size(LeftSubtree) - size(RightSubtree)) &lt; 2, <small>for every node</small>
+</li><li> depth of <i>log<sub>2</sub>N</i> <i>&#8658;</i> worst case search <i>O(logN)</i>
+</li></ul>
+Three approaches to improving worst case search in BSTs:
+<ul>
+<li> <em>randomize</em> &nbsp;-&nbsp; <small>reduce chance of worst-case scenario occuring</small>
+</li><li> <em>amortize</em> &nbsp;-&nbsp; <small>do more work at insertion to make search faster</small>
+</li><li> <em>optimize</em> &nbsp;-&nbsp; <small>implement all operations with performance bounds</small>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Operations for Rebalancing</span></td><td align="right"><small>18/58</small></td></tr></tbody></table>
+</p><p>
+New ops to assist with rebalancing: rotation, insert-at-root
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/left-right-rotation-small.png]" src="Week%2010_files/left-right-rotation-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Operations for Rebalancing</span></td><td align="right"><small>19/58</small></td></tr></tbody></table>
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/left-right-rotation-small.png]" src="Week%2010_files/left-right-rotation-small.png">
+</div><p>
+</p><p></p><pre>Link rotateR(Link n1)
+{
+   if (n1 == NULL) return NULL;
+   Link n2 = n1-&gt;left;
+   if (n2 == NULL) return n1;
+   n1-&gt;left = n2-&gt;right;
+   n2-&gt;right = n1;
+   return n2;
+}
+</pre><p>
+Left rotation is similar with <large><code>n1</code></large>/<large><code>n2</code></large> and left/right switched
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 3: Tree Rotations</span></td><td align="right"><small>20/58</small></td></tr></tbody></table>
+</p><p>
+Incorporate <large><code>rotateL()</code></large> and <large><code>rotateR()</code></large> into TreeLab
+</p><ul>
+<li> add functions into <large><code>Tree</code></large> ADT
+</li><li> add &nbsp;<large><code>R</code></large>&nbsp; command to main loop
+</li><li> add &nbsp;<large><code>L</code></large>&nbsp; command to main loop
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Insertion at Root</span></td><td align="right"><small>21/58</small></td></tr></tbody></table>
+</p><p>
+Previous description of BSTs inserted at leaves.
+</p><p>
+Different approach: insert new value at root.
+</p><p>
+Method for inserting at root (recursive):
+</p><ul>
+<li> base case:
+<ul>
+<li> tree is empty; make new node and make it root
+</li></ul>
+</li><li> recursive case:
+<ul>
+<li> insert new node as root of L/R subtree
+</li><li> lift new node to root by R/L rotation
+</li></ul>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Insertion at Root</span></td><td align="right"><small>22/58</small></td></tr></tbody></table>
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/insert-at-root-small.png]" src="Week%2010_files/insert-at-root-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Insertion at Root</span></td><td align="right"><small>23/58</small></td></tr></tbody></table>
+</p><p>
+Function for insert-at-root:
+</p><p></p><pre>Tree insertAtRoot(Tree t, Item it)
+{ 
+   if (t == NULL) return newNode(item);
+   int diff = cmp(key(it), key(t-&gt;value));
+   if (diff == 0)
+      t-&gt;value = it;
+   else if (diff &lt; 0) {
+      t-&gt;left = insertAtRoot(t-&gt;left, it);
+      t = rotateR(t);
+   }
+   else if (diff &gt; 0) {
+      t-&gt;right = insertAtRoot(t-&gt;right, it);
+      t = rotateL(t);
+   }
+   return t;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 4: Insertion at Root</span></td><td align="right"><small>24/58</small></td></tr></tbody></table>
+</p><p>
+Incorporate <large><code>insertAtRoot()</code></large> into TreeLab
+</p><ul>
+<li> add function into <large><code>Tree</code></large> ADT
+</li><li> add &nbsp;<large><code>I <i>val</i></code></large>&nbsp; command to main loop
+</li><li> add <large><code>printf</code></large>'s to insert function to trace rotations
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Insertion at Root</span></td><td align="right"><small>25/58</small></td></tr></tbody></table>
+</p><p>
+Analysis of insertion-at-root:
+</p><ul>
+<li> same complexity as for insertion-at-leaf <i>O(depth)</i>
+<ul>
+<li> although more actual work for each insertion
+</li></ul>
+</li><li> tendency to be balanced, but no balance guarantee
+</li><li> benefit comes in searching
+<ul>
+<li> for some apps, search favours recently-added items
+</li><li> insertion-at-root ensures these are close to root
+</li></ul>
+</li><li> could even consider "move to root when found"
+<ul>
+<li> effectively provides "self-tuning" search tree
+</li></ul>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Randomized BST Insertion</span></td><td align="right"><small>26/58</small></td></tr></tbody></table>
+</p><p>
+Effects of order of insertion on BST shape:
+</p><ul>
+<li> best case: keys inserted in pre-order <br>
+	<small>(median key first, median of lower half, median of upper half, etc.)</small>
+</li><li> worst case: keys inserted in ascending/descending order
+</li><li> average case: keys inserted in random order <i>&#8658; O(log<sub>2</sub>N)</i>
+</li></ul>
+BST ADT typically has no control over order keys supplied.
+<p>
+Can the algorithm itself introduce some randomness?
+</p><p>
+<em>Exercise</em>: check the best/worst/average cases in TreeLab
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Randomized BST Insertion</span></td><td align="right"><small>27/58</small></td></tr></tbody></table>
+</p><p>
+Approach: normally do leaf insert, randomly do root insert.
+</p><p></p><pre>Tree insertRandom(Tree t, Item it)
+{
+   if (t == NULL) return newNode(it);
+
+   <font color="#0000CC">int chance = rand() % (size(t)+1);</font>
+   <font color="#0000CC">if (chance &lt; K) return insertAtRoot(t, it);</font>
+   int diff = cmp(key(it), key(t-&gt;value));
+   if (diff == 0)
+      t-&gt;value = it;
+   else if (diff &lt; 0)
+      t-&gt;left = insert(t-&gt;left, it);
+   else if (diff &gt; 0)
+      t-&gt;right = insert(t-&gt;right, it);
+   t-&gt;nnodes = count(t);
+   return t;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 5: Randomized Insertion</span></td><td align="right"><small>28/58</small></td></tr></tbody></table>
+</p><p>
+Incorporate <large><code>insertRandom()</code></large> into TreeLab
+</p><ul>
+<li> add function into <large><code>Tree</code></large> ADT
+</li><li> use it as insertion method for <large><code>n</code></large> command
+</li><li> try a variety of random chances
+<ul>
+<li> 1/(N+1) chance of <large><code>insertAtRoot()</code></large>
+</li><li> 3/(N+1) chance of <large><code>insertAtRoot()</code></large>
+</li><li> every third insert is <large><code>insertAtRoot()</code></large>
+</li><li> every tenth insert is <large><code>insertAtRoot()</code></large>
+</li></ul>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Randomized BST Insertion</span></td><td align="right"><small>29/58</small></td></tr></tbody></table>
+</p><p>
+Cost analysis:
+</p><ul>
+<li> similar to cost for inserting keys in random order <i>O(log<sub>2</sub>N)</i>
+</li><li> does not rely on keys being supplied in random order
+</li></ul>
+Approach can also be applied to deletion:
+<ul>
+<li> standard method promotes inorder successor to root
+</li><li> for the randomised method ...
+<ul>
+<li> promote inorder successor from right subtree, OR
+</li><li> promote inorder predecessor from left subtree
+</li></ul>
+</li><li> choice depends on relative sizes of subtrees <small>(favours larger)</small>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Warning: Notation Change</span></td><td align="right"><small>30/58</small></td></tr></tbody></table>
+</p><p>
+From now on, we use the following function names:
+</p><p></p><pre><comment>// return depth of Tree (was TreeDepth)</comment>
+int depth(Tree t) { ... }
+
+<comment>// return #nodes in Tree (was TreeNumNodes)</comment>
+int size(Tree t) { ... }
+
+<comment>// return #nodes in Tree (see later)</comment>
+int count(Tree t) { ... }
+</pre><p>
+This amounts to changing the <large><code>Tree</code></large> ADT interface ... bad for clients.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Tree Size</span></td><td align="right"><small>31/58</small></td></tr></tbody></table>
+</p><p>
+New functions for determining tree size:
+</p><p></p><pre><comment>// efficient; use outside Tree-changing functions</comment>
+int size(Tree t) 
+{
+   return (t == NULL) ? 0 : t-&gt;nnodes;
+}
+<comment>// inefficient; use while making chages to Tree</comment>
+int count(Tree t)
+{
+   if (t == NULL)
+      return 0;
+   else
+      return 1 + count(t-&gt;left) + count(t-&gt;right);
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Joining Two Trees</span></td><td align="right"><small>32/58</small></td></tr></tbody></table>
+</p><p>
+Tree operations so far have involved just one tree.
+</p><p>
+An operation on two trees: &nbsp; <large><code>t = join(t1,t2)</code></large>
+</p><p></p><pre><comment>// Pre-conditions:</comment>
+<comment>// takes two BSTs; returns a single BST</comment>
+<comment>// max(key(t1)) &lt; min(key(t2))</comment>
+
+Tree join(Tree t1, Tree t2) { ...  }
+
+<comment>// Post-conditions:</comment>
+<comment>// result is a BST (i.e. fully ordered)</comment>
+<comment>// result contains all items from t1 and t2</comment>
+</pre><p>
+Allows an alternative formulation of <large><code>delete()</code></large>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Joining Two Trees</span></td><td align="right"><small>33/58</small></td></tr></tbody></table>
+</p><p>
+Method for performing tree-join:
+</p><ul>
+<li> find the min node in the right subtree (<large><code>t2</code></large>)
+</li><li> replace min node by its right subtree
+</li><li> elevate min node to be new root of both trees
+</li></ul>
+Advantage: doesn't increase depth of tree significantly
+<p>
+x &#8804; depth(<large><code>t</code></large>) &#8804; x+1, where x = max(depth(<large><code>t1</code></large>),depth(<large><code>t2</code></large>))
+</p><p>
+Variation: choose deeper subtree; take root from there.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Joining Two Trees</span></td><td align="right"><small>34/58</small></td></tr></tbody></table>
+</p><p>
+Joining two trees:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/join-op-small.png]" src="Week%2010_files/join-op-small.png">
+</div><p>
+</p><p>
+&nbsp;
+</p><p>
+Note: t2' may be less deep than t2
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Joining Two Trees</span></td><td align="right"><small>35/58</small></td></tr></tbody></table>
+</p><p>
+Implementation of tree-join:
+</p><p></p><pre>Tree join(Tree t1, Tree t2)
+{
+   if (t1 == NULL) return t2;
+   if (t2 == NULL) return t1;
+   Node *curr = t2; Node *parent = NULL;
+   <comment>// find inorder successor</comment>
+   while (curr-&gt;left != NULL) {
+      parent = curr;
+      curr = curr-&gt;left;
+   }
+   if (parent != NULL) {
+      <comment>// unlink curr from parent</comment>
+      parent-&gt;left = curr-&gt;right;
+      curr-&gt;right = t2;
+   }
+   curr-&gt;left = t1;
+   return curr;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Joining Two Trees</span></td><td align="right"><small>36/58</small></td></tr></tbody></table>
+</p><p>
+Implementation of deletion using tree join:
+</p><p></p><pre>Tree delete(Tree t, Key k)
+{
+   if (t == NULL) return NULL;
+   int diff = cmp(k, keyOf(t-&gt;value));
+   if (diff &lt; 0)
+      t-&gt;left = delete(t-&gt;left, k);
+   else if (diff &gt; 0)
+      t-&gt;right = delete(t-&gt;right, k);
+   else { <comment>// found an item with key k</comment>
+      Tree n;
+      if (t-&gt;left == NULL &amp;&amp; t-&gt;right == NULL)
+         n = NULL;
+      else if (t-&gt;left == NULL)
+         n = t-&gt;right;
+      else if (t-&gt;right == NULL)
+         n = t-&gt;left;
+      else
+         n = join(t-&gt;left, t-&gt;right);
+      free(t);
+      t = n;
+   }
+   return t;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 6: Tree Join</span></td><td align="right"><small>37/58</small></td></tr></tbody></table>
+</p><p>
+The tree join operation defined above required
+</p><ul>
+<li> max(key(t1)) &lt; min(key(t2))
+</li></ul>
+How might we join two trees if this doesn't hold?
+<p>
+You may use existing operations; you must retain
+</p><p></p><pre>Tree join(tree t1, Tree t2) { ... }
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Splay Trees</span></td><td align="right"><small>38/58</small></td></tr></tbody></table>
+</p><p>
+Splay tree insertion modifies insertion-at-root method:
+</p><ul>
+<li> by considering <em>p</em>arent-<em>c</em>hild-<em>g</em>ranchild <small>(three level analysis)</small>
+</li><li> by performing double-rotations based on p-c-g orientation
+</li></ul>
+The idea: appropriate double-rotations improve tree balance.
+<p>
+Splay tree implementations also do rotation-in-search:
+</p><ul>
+<li> can provide similar effect to periodic rebalance
+</li><li> improves balance, but makes search more expensive
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Splay Trees</span></td><td align="right"><small>39/58</small></td></tr></tbody></table>
+</p><p>
+Cases for splay tree double-rotations:
+</p><ul>
+<li> case 1: grandchild is left-child of left-child
+</li><li> case 2: grandchild is right-child of left-child
+</li><li> case 3: grandchild is left-child of right-child
+</li><li> case 4: grandchild is right-child of right-child
+</li></ul>
+<p></p><div class="center">
+<img alt="[Diagram:Pics/trees/splay-cases-small.png]" src="Week%2010_files/splay-cases-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Splay Trees</span></td><td align="right"><small>40/58</small></td></tr></tbody></table>
+</p><p>
+Double-rotation case for left-child of left-child:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/splay-left-left-small.png]" src="Week%2010_files/splay-left-left-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Splay Trees</span></td><td align="right"><small>41/58</small></td></tr></tbody></table>
+</p><p>
+Double-rotation case for right-child of left-child:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/splay-right-left-small.png]" src="Week%2010_files/splay-right-left-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Splay Trees</span></td><td align="right"><small>42/58</small></td></tr></tbody></table>
+</p><p>
+Gives good overall (amortized) cost:
+</p><ul>
+<li> splay has higher insert cost because of rotations
+</li><li> but (potentially) rotations improve balance
+</li><li> splay has (potentially) higher search cost (rotations)
+</li><li> but overall search cost is lower (move after search) <br>
+	<small>(using assumption that recently searched keys are likely to be searched again)</small>
+</li></ul>
+Need empirical analysis to to determine how much better.
+<p>
+But ... still has worst case search cost <i>O(N)</i>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="section">Real Balanced Trees</span></td><td align="right"></td></tr></tbody></table>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Better Balanced Binary Search Trees</span></td><td align="right"><small>44/58</small></td></tr></tbody></table>
+</p><p>
+So far, we have seen ...
+</p><ul>
+<li> randomised trees ... make poor performance unlikely
+</li><li> splay trees ... reasonable amortized performance
+</li><li> but both types still have <i>O(N)</i> worst case
+</li></ul>
+Ideally, we want both average/worst case to be <i>O(logN)</i>
+<ul>
+<li> AVL trees ... fix imbalances as soon as they occur
+</li><li> 2-3-4 trees ... use varying-sized nodes to assist balance
+</li><li> red-black trees ... isomorphic to 2-3-4, but binary nodes
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="section">AVL Trees</span></td><td align="right"></td></tr></tbody></table>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">AVL Trees</span></td><td align="right"><small>46/58</small></td></tr></tbody></table>
+</p><p>
+Approach:
+</p><ul>
+<li> insertion (at leaves) may cause imbalance
+</li><li> repair balance as soon as we notice imbalance
+</li><li> repairs done locally, not by overall tree restructure
+</li></ul>
+A tree is unbalanced when: abs(depth(left)-depth(right)) &gt; 1
+<p>
+This can be repaired by a single rotation:
+</p><ul>
+<li> if left subtree too deep, rotate right
+</li><li> if right subtree too deep, rotate left
+</li></ul>
+Problem: determining height of subtrees may be expensive.
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... AVL Trees</span></td><td align="right"><small>47/58</small></td></tr></tbody></table>
+</p><p>
+Implementation of AVL insertion
+</p><p></p><pre>Tree insertAVL(Tree t, Item it)
+{
+   if (t == NULL) return newNode(it);
+   int diff = cmp(key(it), key(t-&gt;value));
+   if (diff == 0)
+      t-&gt;value = it;
+   else if (diff &lt; 0)
+      t-&gt;left = insertAVL(t-&gt;left, it);
+   else if (diff &gt; 0)
+      t-&gt;right = insertAVL(t-&gt;right, it);
+   int dL = depth(t-&gt;left);
+   int dR = depth(t-&gt;right);
+   if ((dL - dR) &gt; 1) t = rotateR(t);
+   else if ((dR - dL) &gt; 1) t = rotateL(t);
+   return t;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 7: AVL insertion</span></td><td align="right"><small>48/58</small></td></tr></tbody></table>
+</p><p>
+Incorporate <large><code>insertAVL()</code></large> into TreeLab
+</p><ul>
+<li> add function into <large><code>Tree</code></large> ADT
+</li><li> add <large><code>A <i>val</i></code></large> command to main loop
+</li><li> use the inefficient** version of <large><code>insertAVL()</code></large> <br>
+	<small>(avoids need to change tree node data structure)</small>
+</li></ul>
+Why is it inefficient?
+<ul>
+<li> computes <large><code>depth()</code></large> as part of recursion
+</li><li> computes <large><code>depth()</code></large> multiple times on same branch
+</li><li> <large><code>depth()</code></large> itself requires multiple recursion
+</li></ul>
+Could assist by storing height of subtree in each node
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... AVL Trees</span></td><td align="right"><small>49/58</small></td></tr></tbody></table>
+</p><p>
+Analysis of AVL trees:
+</p><ul>
+<li> trees are <em>height</em>-balanced; subtree depths differ by +/-1
+</li><li> average/worst-case performance of <i>O(logN)</i>
+</li><li> <i>require</i> extra data to be stored in each node
+</li><li> may not be <em>weight</em>-balanced; subtree sizes may differ
+</li></ul>
+<p></p><div class="center">
+<img alt="[Diagram:Pics/trees/height-weight-small.png]" src="Week%2010_files/height-weight-small.html">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="section">2-3-4 Trees</span></td><td align="right"></td></tr></tbody></table>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">2-3-4 Trees</span></td><td align="right"><small>51/58</small></td></tr></tbody></table>
+</p><p>
+<em>2-3-4 trees</em> have three kinds of nodes
+</p><ul>
+<li> 2-nodes, with two children <small>(same as normal BSTs)</small>
+</li><li> 3-nodes, two values and three children
+</li><li> 4-nodes, three values and four children
+</li></ul>
+<p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-tree-small.png]" src="Week%2010_files/2-3-4-tree-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>52/58</small></td></tr></tbody></table>
+</p><p>
+2-3-4 trees are ordered similarly to BSTs
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-order-small.png]" src="Week%2010_files/2-3-4-order-small.png">
+</div><p>
+</p><p>
+In a <em>balanced 2-3-4 tree</em>:
+</p><ul>
+<li> all leaves are at same distance from the root
+</li></ul>
+2-3-4 trees grow "upwards" from the leaves.
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>53/58</small></td></tr></tbody></table>
+</p><p>
+2-3-4 tree implementation:
+</p><p></p><pre>typedef struct node Node;
+typedef struct node *Tree;
+struct node {
+    int  order;    <comment>// 2, 3 or 4</comment>
+    Item data[3];  <comment>// items in node</comment>
+    Tree child[4]; <comment>// links to subtrees</comment>
+};
+</pre><p>
+Note: we change the name <large><code>value</code></large> to <large><code>data</code></large> here.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>54/58</small></td></tr></tbody></table>
+</p><p>
+Make a new 2-3-4 node (always order 2):
+</p><p></p><pre>Node *newNode(Item it)
+{
+    Node *new = malloc(sizeof(Node));
+    assert(new != NULL);
+    new-&gt;order = 2;
+    new-&gt;data[0] = it;
+    new-&gt;child[0] = new-&gt;child[1] = NULL;
+    return new;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>55/58</small></td></tr></tbody></table>
+</p><p>
+Searching in 2-3-4 trees:
+</p><p></p><pre>Item *search(Tree t, Key k)
+{
+    if (t == NULL) return NULL;
+    int i;  int diff;  int nitems = t-&gt;order-1;
+    <comment>// find relevant slot in items</comment>
+    for (i = 0; i &lt; nitems; i++) {
+        diff = compare(k, keyOf(t-&gt;data[i]));
+        if (diff &lt;= 0) break;
+    }    
+    if (diff == 0)
+        <comment>// match; return result</comment>
+        return &amp;(t-&gt;data[i]);
+    else
+        <comment>// keep looking in relevant subtree</comment>
+        return search(t-&gt;child[i], k);
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>56/58</small></td></tr></tbody></table>
+</p><p>
+2-3-4 tree searching cost analysis:
+</p><ul>
+<li> as for other trees, worst case determined by depth <i>d</i>
+</li><li> 2-3-4 trees are always balanced <i>&#8658;</i> depth is <i>O(logN)</i>
+</li><li> worst case for depth: all nodes are 2-nodes <br>
+	same case as for balanced BSTs, i.e. <i>d &#8773; log<sub>2</sub>N</i>
+</li><li> best case for depth: all nodes are 4-nodes <br>
+	balanced tree with branching factor 4, i.e. <i>d &#8773; log<sub>4</sub>N</i>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>57/58</small></td></tr></tbody></table>
+</p><p>
+Building a 2-3-4 tree ... 7 insertions:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-insert-small.png]" src="Week%2010_files/2-3-4-insert-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 8: Insertion into 2-3-4 Tree</span></td><td align="right"><small>58/58</small></td></tr></tbody></table>
+</p><p>
+Show what happens when S then U are inserted into this tree:
+</p><p>&nbsp;</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-exercise-small.png]" src="Week%2010_files/2-3-4-exercise-small.png">
+</div><p>
+</p><p></p><hr><p>
+<small><small>Produced: 4 Oct 2017</small></small>
+
+
+</p></body></html>

@@ -1,0 +1,20 @@
+Input	Initial	Has	Number	AvgTime	AvgTime
+Size	Order	Dups	of runs	forusel	forsort
+5000	random	no	10	0.035	0.097
+5000	sorted	no	10	0.002	0.108
+5000	reverse	no	10	0.001	0.104
+5000	random	yes	10	0.036	0.092
+5000	sorted	yes	10	0.004	0.097
+5000	reverse	yes	10	0.006	0.108
+10000	random	no	10	0.060	0.440
+10000	sorted	no	10	0.006	0.468
+10000	reverse	no	10	0.004	0.482
+10000	random	yes	10	0.052	0.524
+10000	sorted	yes	10	0.007	0.546
+10000	reverse	yes	10	0.007	0.480
+
+
+// sorting in reverse and in order have relatively similar times, when they sort a 
+certain amount of numbers
+//sorting with duplicates or without duplicates based on the data is generally 
+indifferent

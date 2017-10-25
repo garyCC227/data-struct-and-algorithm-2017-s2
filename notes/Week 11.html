@@ -1,0 +1,1235 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>Week 11 </title>
+<link href="Week%2011_files/notes.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<p><span class="title">Week 11 </span></p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">2-3-4 Trees</span></td><td align="right"><small>1/75</small></td></tr></tbody></table>
+</p><p>
+<em>2-3-4 trees</em> have variable-size nodes
+</p><ul>
+<li> each node contains <i>1 &#8804; n &#8804; 3</i> <large><code>Item</code></large>s and <i>n+1</i> subtrees
+</li><li> ordering as for BST (<small>e.g. all keys in leftmost subtree &lt; smallest key in node)</small>
+</li><li> new values inserted at leaves; all leaves are at the same level
+</li><li> tree grows upward from root via split-promote
+</li></ul>
+<p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-tree-small.png]" src="Week%2011_files/2-3-4-tree-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>2/75</small></td></tr></tbody></table>
+</p><p>
+2-3-4 tree implementation:
+</p><p></p><pre>typedef struct node Node;
+typedef struct node *Tree;
+struct node {
+    int  order;    <comment>// 2, 3 or 4</comment>
+    Item data[3];  <comment>// items in node</comment>
+    Tree child[4]; <comment>// links to subtrees</comment>
+};
+</pre><p>
+Example:
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-nodes-small.png]" src="Week%2011_files/2-3-4-nodes-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>3/75</small></td></tr></tbody></table>
+</p><p>
+Search algorithm:
+</p><p></p><pre>search(Tree, Key)
+{
+   if (empty(Tree)) return NOT_FOUND
+   <comment>// scan root node, looking for key</comment>
+   if (&#8707; i, key(data[i]) == Key)
+      return Node containing data[i]
+   if (Key &lt; key(data[0]))
+      return search(child[0],Key)
+   if (&#8707; i, key(data[i]) &lt; Key &lt; key(data[i+1]))
+      return search(child[i],Key)
+   if (Key &gt; key(data[order-1]))
+      return search(child[N],Key)
+   return NOT_FOUND
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>4/75</small></td></tr></tbody></table>
+</p><p>
+Insertion algorithm:
+</p><p></p><pre>insert(Tree, Item)
+{
+   Node = search(Tree, key(Item)
+   Parent = parent of Node
+   if (order(Node) &lt; 4)
+      insert Item in Node, order++
+   else {
+      promote = Node.data[1]  <comment>// middle value</comment>
+      NodeL   = new Node containing data[0]
+      NodeR   = new Node containing data[2]
+      if (key(Item) &lt; key(data[1]))
+         insert Item in NodeL
+      else
+         insert Item in NodeR
+      insert promote into Parent
+      while (order(Parent) == 4)
+         continue promote/split upwards
+      if (isRoot(Parent) &amp;&amp; order(Parent) == 4)
+         split root, making new root
+   }
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>5/75</small></td></tr></tbody></table>
+</p><p>
+Insertion into a 2-node or 3-node:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-add-small.png]" src="Week%2011_files/2-3-4-add-small.png">
+</div><p>
+</p><p>
+Insertion into a 4-node (requires a split):
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-split-small.png]" src="Week%2011_files/2-3-4-split-small.png">
+</div><p>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>6/75</small></td></tr></tbody></table>
+</p><p>
+Splitting the root:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/2-3-4-split-root-small.png]" src="Week%2011_files/2-3-4-split-root-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>7/75</small></td></tr></tbody></table>
+</p><p>
+2-3-4 tree performance ...
+</p><p>
+<em>Insertion</em> (into tree of depth <i>d</i>) = <i>O(d)</i> comparisons
+</p><ul>
+<li> multiple comparisons in each of <i>d</i> &nbsp;2-3-4 nodes
+</li><li> along with occasional splitting to shift values between nodes
+</li></ul>
+<em>Search</em> (in tree of depth <i>d</i>) = <i>O(d)</i> comparisons
+<ul>
+<li> multiple comparisons in each of <i>d</i> &nbsp;2-3-4 nodes
+</li></ul>
+Depth of 2-3-4 tree with <i>N</i> nodes = <i>log<sub>4</sub>N &lt; d &lt; log<sub>2</sub>N</i>
+<p>
+Note that all paths in a 2-3-4 tree have same length <i>d</i>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... 2-3-4 Trees</span></td><td align="right"><small>8/75</small></td></tr></tbody></table>
+</p><p>
+Variations on 2-3-4 trees ...
+</p><p>
+Variation #1: why stop at 4? why not 2-3-4-5 trees? or <i>M</i>-way trees?
+</p><ul>
+<li> allow nodes to hold up to <i>M-1</i> items, and at least <i>M/2</i>
+</li><li> if each node is a disk-page, then we have a B-tree <small>(databases)</small>
+</li><li> for B-trees, depending on <large><code>Item</code></large> size, <i>M &gt; 100/200/400</i>
+</li></ul>
+Variation #2: don't have "variable-sized" nodes
+<ul>
+<li> use standard BST nodes, augmented with one extra piece of data
+</li><li> implement similar strategy as 2-3-4 trees <i>&#8594;</i> red-black trees.
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="section">Red-Black Trees</span></td><td align="right"></td></tr></tbody></table>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Red-Black Trees</span></td><td align="right"><small>10/75</small></td></tr></tbody></table>
+</p><p>
+<em>Red-black trees</em> are a representation of 2-3-4 trees using BST nodes.
+</p><p>
+Definition of a red-black tree
+</p><ul>
+<li> a BST in which each node is marked red or black
+</li><li> no two red nodes appear consecutively on any path
+</li><li> a red node corresponds to a 2-3-4 sibling of its parent
+</li><li> a black node corresponds to a 2-3-4 child of its parent
+</li></ul>
+Insertion algorithm: avoids worst case <i>O(n)</i> behaviour
+<p>
+Search algorithm: standard BST search
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Red-Black Trees</span></td><td align="right"><small>11/75</small></td></tr></tbody></table>
+</p><p>
+Representing 4-nodes in red-black trees:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/234-rb-nodes-small.png]" src="Week%2011_files/234-rb-nodes-small.png">
+</div><p>
+<br>
+Note: some texts colour the links rather than the nodes.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Red-Black Trees</span></td><td align="right"><small>12/75</small></td></tr></tbody></table>
+</p><p>
+Representing 3-nodes in red-black trees (two styles):
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/234-rb-nodes2-small.png]" src="Week%2011_files/234-rb-nodes2-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Red-Black Trees</span></td><td align="right"><small>13/75</small></td></tr></tbody></table>
+</p><p>
+Equivalent trees <small>(one 2-3-4, one red-black):</small>
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/trees/234-rb-tree2-small.png]" src="Week%2011_files/234-rb-tree2-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Red-Black Trees</span></td><td align="right"><small>14/75</small></td></tr></tbody></table>
+</p><p>
+Red-black tree implementation:
+</p><p></p><pre>typedef enum {RED,BLACK} Colr;
+typedef struct Node *Link;
+typedef struct Node *Tree;
+typedef struct Node {
+   Item data;   <comment>// actual data</comment>
+   <font color="#0000CC">Colr colour;</font> <comment>// relationship to parent</comment>
+   Link left;   <comment>// left subtree</comment>
+   Link right;  <comment>// right subtree</comment>
+} Node;
+</pre><p>
+<large><code>RED</code></large> = node is part of the same 2-3-4 node as its parent (sibling)
+</p><p>
+<large><code>BLACK</code></large> = node is a child of the 2-3-4 node containing the parent
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Red-Black Trees</span></td><td align="right"><small>15/75</small></td></tr></tbody></table>
+</p><p>
+Making new nodes requires a colour:
+</p><p></p><pre>Node *newNode(Item it, Colr c)
+{
+   Node *new = malloc(sizeof(Node));
+   assert(new != NULL);
+   new-&gt;data = it; <font color="#0000CC">new-&gt;colour = c;</font>
+   new-&gt;left = new-&gt;right = NULL;
+   return new;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Red-Black Trees</span></td><td align="right"><small>16/75</small></td></tr></tbody></table>
+</p><p>
+Searching method is standard BST search:
+</p><p></p><pre>Item *search(Tree t, Key k)
+{
+   if (t == NULL) return NULL;
+   int diff = cmp(k, key(t-&gt;data));
+   if (diff &lt; 0)
+      return search(t-&gt;left, k);
+   else if (diff &gt; 0)
+      return search(t-&gt;right, k);
+   else <comment>// matches</comment>
+      return &amp;(t-&gt;data);
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 1: 2-3-4 vs Red-Black Insertion</span></td><td align="right"><small>17/75</small></td></tr></tbody></table>
+</p><p>
+Show the 2-3-4 tree resulting from the insertion of:
+</p><p></p><pre>10  5  9  6  2  4  20  15  18  19  17  12  13  14
+</pre><p>
+
+
+</p><p>
+
+
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="section">Symbol Tables</span></td><td align="right"></td></tr></tbody></table>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Symbol Tables</span></td><td align="right"><small>19/75</small></td></tr></tbody></table>
+</p><p>
+A <em>symbol table</em> (<em>dictionary</em>) is a collection of items
+</p><ul>
+<li> each item has an identifying <em>key</em> (typically, a string)
+</li><li> primary operations are: <em>insert</em>, <em>search</em> (by key)
+</li></ul>
+<p></p><pre>SymTab insert(SymTab t, Item it) { ... }
+Item *search(SymTab t, Key k) { ... }
+</pre><p>
+Applications of symbol tables:
+</p><ul>
+<li> programming language processors <small>(e.g. compilers, interpreters)</small>
+</li><li> text processing systems <small>(spell-checkers, document retrieval)</small>
+</li><li> implementing Set ADTs <small>(insert = <i>S &#8746; {n}</i>, &nbsp; search = <i>n &#8712; S</i>)</small>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Key-Indexed Symbol Table</span></td><td align="right"><small>20/75</small></td></tr></tbody></table>
+</p><p>
+Consider the following special case:
+</p><ul>
+<li> keys are integers in a relatively small range &nbsp;<small>(e.g. <large><code>0..N-1</code></large>)</small>
+</li><li> symbol data implemented as array of <large><code>Item</code></large> &nbsp;<small>(e.g. <large><code>Item a[N]</code></large>)</small>
+</li><li> indexed by <large><code>Key</code></large> values <small>(mapped into valid index)</small> &nbsp;<small>(e.g. <large><code>it = a[k]</code></large>)</small>
+</li></ul>
+Leads to very efficient representation
+<ul>
+<li> Cost(<large><code>insert</code></large>) = <i>O(1)</i>, Cost(<large><code>search</code></large>) = <i>O(1)</i>,
+</li><li> Cost(<large><code>newSTab</code></large>) = <i>O(N)</i>, Cost(<large><code>count</code></large>) = <i>O(1)</i>,
+</li><li> Cost(<large><code>get_ith</code></large>) = <i>O(1)</i>, Cost(<large><code>delete</code></large>) = <i>O(1)</i>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Key-Indexed Symbol Table</span></td><td align="right"><small>21/75</small></td></tr></tbody></table>
+</p><p>
+Data representation:
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/searching/key-indexed-small.png]" src="Week%2011_files/key-indexed-small.png">
+</div><p>
+</p><p><br></p><p>
+Note: <large><code>UNUSED</code></large> is distinguished from all other <large><code>Item</code></large> values.
+</p><p>
+Essentially a simple form of hashing (see later).
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 2: Key-to-index Mapping</span></td><td align="right"><small>22/75</small></td></tr></tbody></table>
+</p><p>
+Define a function which
+</p><ul>
+<li> takes a key value in the range lo..hi
+</li><li> returns an index value into array of size hi-lo+1
+</li><li> aborts if the "key" value is outside the range lo..hi
+</li></ul>
+E.g. <large><code>lo == 12,  hi == 27,  a[16]</code></large>
+<p>
+<large><code>indexOf(12) == 0,  indexOf(17) = 5,</code></large>
+</p><p>
+<large><code>indexOf(21) == 9,  indexOf(27) == 15</code></large>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Symbol Table Representations</span></td><td align="right"><small>23/75</small></td></tr></tbody></table>
+</p><p>
+Symbol tables can be represented in many ways:
+<itemiz>
+</itemiz></p><li> key-indexed array <small>(max # items, restricted key space)</small>
+</li><li> key-sorted array <small>(max # items, using binary search)</small>
+</li><li> linked list <small>(unlimited items, sorted list?)</small>
+</li><li> binary search tree <small>(unlimited items, traversal orders)</small>
+
+<p>
+Costs (assuming <i>N</i> items):
+</p><div class="center">
+<table border="1" cellspacing="0" cellpadding="2">
+<tbody><tr><td class="hd">Type</td><td class="hd" colspan="3">Search costs</td></tr>
+<tr><td>&nbsp;</td><td class="hd">min</td><td class="hd">max</td><td class="hd">avg</td></tr>
+<tr><td>key-indexed</td><td>1</td><td>1*</td><td>1</td></tr>
+<tr><td>sorted array</td><td>1</td><td>log<sub>2</sub>N</td><td>log<sub>2</sub>N</td></tr>
+<tr><td>linked list</td><td>1</td><td>N</td><td>N/2</td></tr>
+<tr><td>BSTree</td><td>1</td><td>N*</td><td>log<sub>2</sub>N</td></tr>
+</tbody></table>
+</div>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="section">Hashing</span></td><td align="right"></td></tr></tbody></table>
+</p><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Hashing</span></td><td align="right"><small>25/75</small></td></tr></tbody></table>
+</p><p>
+Key-indexed arrays had "perfect" search performance <i>O(1)</i>
+</p><ul>
+<li> but required a dense range of index values
+</li><li> used a fixed-size array (max size ever needed)
+</li><li> bigger array &#8658; more useful but wastes more space
+</li></ul>
+<em>Hashing</em> allows us to approximate this performance, but
+<ul>
+<li> allows arbitrary types of keys
+</li><li> map (hash) keys into compact range of index values
+</li><li> store items in array, accessed by index value
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing</span></td><td align="right"><small>26/75</small></td></tr></tbody></table>
+</p><p>
+The ideal for key-indexed collections:
+</p><p></p><pre>courses["COMP3311"] = "Database Systems";
+printf("%s\n", courses["COMP3311"]);
+</pre><p>
+Almost as good:
+</p><p></p><pre>courses[h("COMP3311")] = "Database Systems";
+printf("%s\n", courses[h("COMP3311")]);
+</pre><p>
+In practice:
+</p><p></p><pre>item = {"COMP3311","Database Systems"};
+courses = insert(courses, item);
+printf("%s\n", search(courses, "COMP3311"));
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing</span></td><td align="right"><small>27/75</small></td></tr></tbody></table>
+</p><p>
+To use arbitrary values as keys, we need three things:
+</p><ul>
+<li> set of <large><code>Key</code></large> values, &nbsp; each key identifies one <large><code>Item</code></large>
+</li><li> an array (of size <i>N</i>) to store <large><code>Item</code></large>s
+</li><li> a <em>hash function</em> <i>h()</i> of type <large><code>Key</code></large>&#8594;[0..<i>N</i>-1]
+<ul>
+<li> requirement: if <i>(x == y)</i> then <i>h(x) == h(y)</i>
+</li><li> requirement: <i>h(x)</i> always returns same value for given <i>x</i>
+</li></ul>
+</li><li> a <em>collision resolution</em> method
+<ul>
+<li> collision = (<i>x != y &amp;&amp; h(x) == h(y)</i>)
+</li><li> collisions are inevitable when <i>dom(<large><code>Key</code></large>) &gt;&gt; N</i>
+</li></ul>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing</span></td><td align="right"><small>28/75</small></td></tr></tbody></table>
+</p><p>
+Generalised ADT for a <em>collection</em> of <large><code>Item</code></large>s
+</p><p>
+Interface:
+</p><p></p><pre>typedef struct CollectionRep *Collection;
+
+Collection newCollection();    <comment>// make new empty collection</comment>
+Item *search(Collection, Key); <comment>// find item with key</comment>
+void insert(Collection, Item); <comment>// add item into collection</comment>
+void delete(Collection, Key);  <comment>// drop item with key</comment>
+</pre><p>
+Implementation:
+</p><p></p><pre>typedef struct CollectionRep {
+   <comment>... some data structure to hold multiple Items ...</comment>
+} CollectionRep;
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing</span></td><td align="right"><small>29/75</small></td></tr></tbody></table>
+</p><p>
+For hash tables, we make one change to interface:
+</p><p></p><pre>typedef struct HashTabRep *HashTable;
+<comment>// make new empty table of size N</comment>
+HashTable newHashTable(<font color="#CC0000">int</font>);
+Item *search(HashTable, Key); <comment>// find item with key</comment>
+void insert(HashTable, Item); <comment>// add item into collection</comment>
+void delete(HashTable, Key);  <comment>// drop item with key</comment>
+</pre><p>
+Implementation:
+</p><p></p><pre>typedef struct HashTabRep {...Items[N]...} HashTabRep;
+<comment>... plus ...</comment>
+int hash(Key k, int N);  <comment>// hash function giving 0..N-1</comment>
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 3: Hash Lab</span></td><td align="right"><small>30/75</small></td></tr></tbody></table>
+</p><p>
+Implement a HashLab which:
+</p><ul>
+<li> allows you to specify
+<ul>
+<li> the size of the hash table array
+</li><li> the hash function to use (0..3)
+</li><li> the collision resolution strategy (C,L,D)
+</li></ul>
+</li><li> loads the hash table with dictionary <large><code>words</code></large>
+</li><li> runs performance test by searching for each word
+</li><li> records average # items considered in searches
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Hashing </span></td><td align="right"><small>31/75</small></td></tr></tbody></table>
+</p><p>
+<em>Hashing</em> is a method for maintaining a collection
+</p><ul>
+<li> via an array of <large><code>Item</code></large>s <small>(or <large><code>(Item *)</code></large>s)</small>, e.g. &nbsp;<large><code>Item *a[N];</code></large>
+</li><li> with optimal performance: <i>O(1)</i> search/insert/delete
+</li></ul>
+Requires a function to map keys to indexes:
+	&nbsp; <large><code>hash</code></large>: &nbsp;<i>Key &#8594; 0..N-1</i>
+<p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/hashing/hashing-review-small.png]" src="Week%2011_files/hashing-review-small.html">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing </span></td><td align="right"><small>32/75</small></td></tr></tbody></table>
+</p><p>
+Hash table interface:
+</p><p></p><pre>typedef struct HashTabRep *HashTable;
+<comment>// make new empty table of size N</comment>
+HashTable newHashTable(int);
+<comment>// find item with key</comment>
+Item *search(HashTable, Key);
+<comment>// add item into collection</comment>
+void insert(HashTable, Item);
+<comment>// drop item with key</comment>
+void delete(HashTable, Key);
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 4: Hash Lab</span></td><td align="right"><small>33/75</small></td></tr></tbody></table>
+</p><p>
+Implement a HashLab which:
+</p><ul>
+<li> allows you to specify
+<ul>
+<li> the size of the hash table array
+</li><li> the hash function to use (0..3)
+</li><li> the collision resolution strategy (C,L,D)
+</li></ul>
+</li><li> loads the hash table with dictionary <large><code>words</code></large>
+</li><li> runs performance test by searching for each word
+</li><li> records average # items considered in searches
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing </span></td><td align="right"><small>34/75</small></td></tr></tbody></table>
+</p><p>
+Example hash table implementation:
+</p><p></p><pre>typedef struct HashTabRep {
+   int  N;       <comment>// size of array</comment>
+   Item **items; <comment>// array of (Item *)</comment>
+} HashTabRep;
+
+HashTable newHashTable(int N)
+{
+   HashTable new = malloc(sizeof(HashTabRep));
+   new-&gt;items = malloc(N*sizeof(Item *));
+   new-&gt;N = N;
+   for (int i = 0; i &lt; N; i++)
+      { new-&gt;items[i] = NULL; }
+   return new;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing </span></td><td align="right"><small>35/75</small></td></tr></tbody></table>
+</p><p>
+Idealised versions of HashTable operations:
+</p><p></p><pre>Item *<font color="#009900">search</font>(HashTable ht, Key k)
+{
+    int i = hash(k, ht-&gt;N);
+    return ht-&gt;items[i];
+}
+void <font color="#009900">insert</font>(HashTable ht, Item it)
+{
+    int i = hash(key(it), ht-&gt;N);
+    ht-&gt;items[i] = newItem(it);
+}
+void <font color="#009900">delete</font>(HashTable ht, Key k)
+{
+    int i = hash(k, ht-&gt;N);
+    free(ht-&gt;items[i]);
+    ht-&gt;items[i] = NULL;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Hash Functions</span></td><td align="right"><small>36/75</small></td></tr></tbody></table>
+</p><p>
+Points to note:
+</p><ul>
+<li> converts <large><code>Key</code></large> value to index value [0..N-1]
+</li><li> deterministic (key value <i>k</i> always maps to same value)
+</li><li> use <large><code>mod</code></large> function to map hash value to index value
+</li><li> spread key values <em>uniformly</em> over address range <br>
+	<small>(assumes that keys themselves are uniformly distributed)</small>
+</li><li> as much as possible, <i>h(k) &#8800; h(j)</i> if <i>j &#8800; k</i>
+</li><li> cost of computing hash function must be cheap
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Functions</span></td><td align="right"><small>37/75</small></td></tr></tbody></table>
+</p><p>
+Basic idea behind hash function
+</p><p></p><pre>int hash(Key key, int N)
+{
+   int val = <i>convert key to int</i>;
+   return val % N;
+}
+</pre><p>
+If keys are <large><code>int</code></large>s, conversion is easy <small>(identity function)</small>
+</p><p>
+How to convert keys which are strings? &nbsp; <small>(e.g. <large><code>"COMP1927"</code></large> or <large><code>"9300035"</code></large>)</small>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 5: Hash Functions (i)</span></td><td align="right"><small>38/75</small></td></tr></tbody></table>
+</p><p>
+Consider this potential hash function:
+</p><p></p><pre>int hash(char *key, int N)
+{
+    int h = 0; char *c;
+    for (c = key; *c != '\0'; c++)
+        h = h + *c;
+    return h % N;
+}
+</pre><p>
+How does this function convert strings to <large><code>int</code></large>s?
+</p><p>
+What are the deficiencies with this function and how can it be improved?
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Functions</span></td><td align="right"><small>39/75</small></td></tr></tbody></table>
+</p><p>
+A slightly more sophisticated hash function
+</p><p></p><pre>int hash(char *key, int N)
+{
+   int h = 0;  char *c;
+   int a = 127; <comment>// a prime number</comment>
+   for (c = key; *c != '\0'; c++)
+      h = (a * h + *c) % N;
+   return h;
+}
+</pre><p>
+Converts strings into integers in table range.
+</p><p>
+But poor choice of <large><code>a</code></large> (e.g. 128) can result in poor hashing.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Functions</span></td><td align="right"><small>40/75</small></td></tr></tbody></table>
+</p><p>
+To use all of value in hash, with suitable "randomization":
+</p><p></p><pre>int hash(char *key, int N)
+{
+   int h = 0, a = 31415, b = 21783;
+   char *c;
+   for (c = key; *c != '\0'; c++) {
+      a = a*b % (N-1);
+      h = (a * h + *c) % N;
+   }
+   return h;
+}
+</pre><p>
+This approach is known as <em>universal hashing</em>.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Functions</span></td><td align="right"><small>41/75</small></td></tr></tbody></table>
+</p><p>
+A real hash function <small>(from PostgreSQL DBMS)</small>:
+</p><p></p><pre><small>
+hash_any(unsigned char *k, register int keylen, int N)
+{
+    register uint32 a, b, c, len;
+    <comment>// set up internal state</comment>
+    len = keylen;
+    a = b = 0x9e3779b9;
+    c = 3923095;
+    <comment>// handle most of the key, in 12-char chunks</comment>
+    while (len &gt;= 12) {
+        a += (k[0] + (k[1] &lt;&lt; 8) + (k[2] &lt;&lt; 16) + (k[3] &lt;&lt; 24));
+        b += (k[4] + (k[5] &lt;&lt; 8) + (k[6] &lt;&lt; 16) + (k[7] &lt;&lt; 24));
+        c += (k[8] + (k[9] &lt;&lt; 8) + (k[10] &lt;&lt; 16) + (k[11] &lt;&lt; 24));
+        mix(a, b, c);
+        k += 12; len -= 12;
+    }
+    <comment>// collect any data from remaining bytes into a,b,c</comment>
+    mix(a, b, c);
+    return c % N;
+}
+</small></pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Functions</span></td><td align="right"><small>42/75</small></td></tr></tbody></table>
+</p><p>
+Where <large><code>mix</code></large> is defined as:
+</p><p></p><pre><small>
+#define mix(a,b,c) \
+{ \
+  a -= b; a -= c; a ^= (c&gt;&gt;13); \
+  b -= c; b -= a; b ^= (a&lt;&lt;8);  \
+  c -= a; c -= b; c ^= (b&gt;&gt;13); \
+  a -= b; a -= c; a ^= (c&gt;&gt;12); \
+  b -= c; b -= a; b ^= (a&lt;&lt;16); \
+  c -= a; c -= b; c ^= (b&gt;&gt;5);  \
+  a -= b; a -= c; a ^= (c&gt;&gt;3);  \
+  b -= c; b -= a; b ^= (a&lt;&lt;10); \
+  c -= a; c -= b; c ^= (b&gt;&gt;15); \
+}
+</small></pre><p>
+i.e. scrambles all of the bits from the bytes of the key value
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Hash Table ADT</span></td><td align="right"><small>43/75</small></td></tr></tbody></table>
+</p><p>
+Enhanced concrete data representation:
+</p><p></p><pre>#include "Item.h"  <comment>// Item has key and data</comment>
+
+#define NoItem <font color="#000099"><i>distinguished Item value</i></font>
+
+typedef struct HashTabRep {
+   Item *items; // array of Items
+   int  nslots; // # elements in array  (was called N)
+   int  nitems; // # items stored in array
+} HashTabRep;
+
+typedef HashTabRep *HashTable;
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 6: NoItem values</span></td><td align="right"><small>44/75</small></td></tr></tbody></table>
+</p><p>
+Suggest suitable <large><code>NoItem</code></large> values if
+</p><ul>
+<li> keys are integers
+</li><li> keys are strings
+</li><li> <large><code>items[]</code></large> is an array of <large><code>(Item *)</code></large>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Table ADT</span></td><td align="right"><small>45/75</small></td></tr></tbody></table>
+</p><p>
+Hash table initialisation:
+</p><ul>
+<li> create a Rep and an array, fill array with <large><code>NoItem</code></large>
+</li></ul>
+<p></p><pre>HashTable newHashTable(int N)
+{
+   HashTabRep *new = malloc(sizeof(HashTabRep));
+   assert(new != NULL);
+   new-&gt;items = malloc(N*sizeof(Item));
+   assert(new-&gt;items != NULL);
+   for (int i = 0; i &lt; N; i++)
+      new-&gt;items[i] = NoItem;
+   new-&gt;nitems = 0; new-&gt;nslots = N;
+   return new;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Table ADT</span></td><td align="right"><small>46/75</small></td></tr></tbody></table>
+</p><p>
+Search function
+</p><p></p><pre>Item *<b><font color="#009900">search</font></b>(HashTable ht, Key k) {
+   int i = hash(k, ht-&gt;nslots);
+   if (ht-&gt;items[i] == NoItem)
+      return NULL;
+   else if (key(ht-&gt;items[i]) != k)
+      return NULL;
+   else
+      return &amp;(ht-&gt;items[i]);
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hash Table ADT</span></td><td align="right"><small>47/75</small></td></tr></tbody></table>
+</p><p>
+Functions to maintain hash table:
+</p><p></p><pre>void <b><font color="#009900">insert</font></b>(HashTable ht, Item it) {
+   int i = hash(key(it), ht-&gt;nslots);
+   if (ht-&gt;items[i] == NoItem)
+      { ht-&gt;items[i] = it; ht-&gt;nitems++; }
+   else if (key(ht-&gt;items[i] == key(it))
+      ht-&gt;items[i] = it;  <comment>// update</comment>
+   else { <comment>// (key(ht-&gt;items[i] != key(it))</comment>
+      <comment>// ... what to do? </comment>
+   }
+}
+void <b><font color="#009900">delete</font></b>(HashTable ht, Key k) {
+   int i = hash(k, ht-&gt;nslots);
+   if (ht-&gt;items[i] == NoItem)
+      return;
+   else if (key(ht-&gt;items[i] == k)
+      { ht-&gt;items[i] = NoItem; ht-&gt;nitems--; }
+   else { <comment>// (key(ht-&gt;items[i] != key(it))</comment>
+      return;  <comment>// no item with key k in table</comment>
+   }
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Problems with Hashing</span></td><td align="right"><small>48/75</small></td></tr></tbody></table>
+</p><p>
+In ideal scenarios, search cost in hash table is <i>O(1)</i>.
+</p><p>
+Problems with hashing:
+</p><ul>
+<li> hash function relies on size of array (<i>&#8658;</i> can't expand)
+<small>
+<ul>
+<li> changing the size of the array changes the hash function
+</li><li> could make array larger, but would need to re-insert all <large><code>Item</code></large>s
+</li></ul>
+</small>
+</li><li> items are stored in (effectively) random order
+</li><li> if size(KeySpace) &#8811; size(IndexSpace), &nbsp;collisions inevitable
+<ul>
+<li> <em>collision</em>: &nbsp; k != j &nbsp;&amp;&amp;&nbsp; hash(k,N) == hash(j,N)
+</li></ul>
+</li><li> if <large><code>nitems</code></large> &gt; <large><code>nslots</code></large>, &nbsp;collisions inevitable
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 7: Expanding Hash Table</span></td><td align="right"><small>49/75</small></td></tr></tbody></table>
+</p><p>
+Write a function
+</p><p></p><pre>HashTable expand(HashTable ht) { ... }
+</pre><p>
+which doubles the number of slots in a hash table
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Collision Resolution</span></td><td align="right"><small>50/75</small></td></tr></tbody></table>
+</p><p>
+Three approaches to dealing with hash collisions:
+</p><ul>
+<li> allow multiple <large><code>Item</code></large>s in a single array location
+<ul>
+<li> e.g. array of linked lists <small>(mix of <i>O(1)</i> and <i>O(N)</i>)</small>
+</li></ul>
+</li><li> systematically compute new indexes until find a free slot
+<ul>
+<li> need strategies for computing new indexes (aka <em>probing</em>)
+</li></ul>
+</li><li> increase the size of the array
+<ul>
+<li> needs a method to "adjust" <large><code>hash()</code></large> (e.g. linear hashing)
+</li></ul>
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Separate Chaining</span></td><td align="right"><small>51/75</small></td></tr></tbody></table>
+</p><p>
+Solve collisions by having multiple items per array entry.
+</p><p>
+Make each element the start of linked-list of Items.
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/hashing/hash-linked-small.png]" src="Week%2011_files/hash-linked-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Separate Chaining</span></td><td align="right"><small>52/75</small></td></tr></tbody></table>
+</p><p>
+Concrete data structure for hashing via chaining
+</p><p></p><pre>typedef struct HashTabRep {
+   <font color="#000099">List *lists</font>; // array of Lists of Items
+   int  nslots; // # elements in array
+   int  nitems; // # items stored in HashTable
+} HashTabRep;
+
+HashTable newHashTable(int N)
+{
+   HashTabRep *new = malloc(sizeof(HashTabRep));
+   assert(new != NULL);
+   new-&gt;lists = malloc(N*sizeof(List));
+   assert(new-&gt;lists != NULL);
+   for (int i = 0; i &lt; N; i++)
+      new-&gt;lists[i] = newList();
+   new-&gt;nslots = N; new-&gt;nitems = 0;
+   return new;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Separate Chaining</span></td><td align="right"><small>53/75</small></td></tr></tbody></table>
+</p><p>
+Using the <large><code>List</code></large> ADT, search becomes:
+</p><p></p><pre>#include "List.h" 
+Item *<b><font color="#009900">search</font></b>(HashTable ht, Key k)
+{
+   int i = hash(k, ht-&gt;nslots);
+   return ListSearch(ht-&gt;lists[i], k);
+}
+</pre><p>
+Even without <large><code>List</code></large> abstraction, easy to implement.
+</p><p>
+Using sorted lists gives only small performance gain.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Separate Chaining</span></td><td align="right"><small>54/75</small></td></tr></tbody></table>
+</p><p>
+Other list operations are also simple:
+</p><p></p><pre>#include "List.h"
+
+void <b><font color="#009900">insert</font></b>(HashTable ht, Item it) {
+   Key k = key(it);
+   int i = hash(k, ht-&gt;nslots);
+   ListInsert(ht-&gt;lists[i], it);
+}
+void <b><font color="#009900">delete</font></b>(HashTable ht, Key k) {
+   int i = hash(k, ht-&gt;nslots);
+   ListDelete(ht-&gt;lists[i], k);
+}
+</pre><p>
+Essentially: select a list; operate on that list.
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Separate Chaining</span></td><td align="right"><small>55/75</small></td></tr></tbody></table>
+</p><p>
+Cost analysis:
+</p><ul>
+<li> <i>N</i> array entries (slots), <i>M</i> stored items
+</li><li> average list length <i>L = M/N</i>
+</li><li> best case: all lists are same length <i>L</i>
+</li><li> worst case: <i>h(k)=0</i>, one list of length <i>M</i>
+</li><li> searching within a list of length <i>n</i>:
+<ul>
+<li> best: 1, worst: <i>n</i>, average: <i>n/2</i>
+</li></ul>
+</li><li> if good hash and <i>M&#8804;N</i>, cost is 1
+</li><li> if good hash and <i>M&gt;N</i>, cost is <i>(M/N)/2</i>
+</li></ul>
+Ratio of items/slots is called <em>load</em> <i>&#945; = M/N</i>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Linear Probing</span></td><td align="right"><small>56/75</small></td></tr></tbody></table>
+</p><p>
+Collision resolution by finding a new location for <large><code>Item</code></large>
+</p><ul>
+<li> hash indicates slot <i>i</i> which is already used
+</li><li> try next slot, then next, until we find a free slot
+</li><li> insert item in available slot
+</li></ul>
+Examples:
+<p></p><div class="center">
+<img alt="[Diagram:Pics/hashing/hash-linear-small.png]" src="Week%2011_files/hash-linear-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Hashing </span></td><td align="right"><small>57/75</small></td></tr></tbody></table>
+</p><p>
+<em>Hashing</em> is a method for maintaining a collection
+</p><ul>
+<li> via an array of <large><code>Item</code></large>s <small>(or <large><code>(Item *)</code></large>s)</small>, e.g. &nbsp;<large><code>Item *a[N];</code></large>
+</li><li> with optimal performance: <i>O(1)</i> search/insert/delete
+</li></ul>
+Requires a function to map keys to indexes:
+    &nbsp; <large><code>hash</code></large>: &nbsp;<i>Key &#8594; 0..N-1</i>
+<p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/hashing/hashing-review-small.png]" src="Week%2011_files/hashing-review-small.html">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing </span></td><td align="right"><small>58/75</small></td></tr></tbody></table>
+</p><p>
+Hash table interface:
+</p><p></p><pre>typedef struct HashTabRep *HashTable;
+<comment>// make new empty table of size N</comment>
+HashTable newHashTable(int);
+<comment>// find item with key</comment>
+Item *search(HashTable, Key);
+<comment>// add item into collection</comment>
+void insert(HashTable, Item);
+<comment>// drop item with key</comment>
+void delete(HashTable, Key);
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing </span></td><td align="right"><small>59/75</small></td></tr></tbody></table>
+</p><p>
+Possible concrete data representation:
+</p><p></p><pre>#define NoItem <font color="#000099"><i>distinguished Item value</i></font>
+
+typedef struct HashTabRep {
+   Item *items; // array of Items
+   int  nslots; // # elements in array
+   int  nitems; // # items stored in array
+} HashTabRep;
+
+typedef HashTabRep *HashTable;
+</pre><p>
+Assume: &nbsp;<large><code>key(NoItem)</code></large> matches no real <large><code>Key</code></large> value
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Hashing </span></td><td align="right"><small>60/75</small></td></tr></tbody></table>
+</p><p>
+Consider a hash table with <i>N</i> slots ...
+</p><p>
+When using chaining
+</p><ul>
+<li> can store &gt; <i>N</i> items in table
+</li><li> <i>h(x) == h(y)</i> means add <i>x</i> and <i>y</i> into same list
+</li></ul>
+When using a fixed-size array
+<ul>
+<li> can store &#8804; <i>N</i> items in table
+	&nbsp; <small>(typically &#8804; <i>2N/3</i>)</small>
+</li><li> <i>h(x) == h(y)</i> handled by probing (table scan)
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Linear Probing</span></td><td align="right"><small>61/75</small></td></tr></tbody></table>
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/hashing/hash-linear-small.png]" src="Week%2011_files/hash-linear-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Linear Probing</span></td><td align="right"><small>62/75</small></td></tr></tbody></table>
+</p><p>
+Insert function for linear probing:
+</p><p></p><pre>void <b><font color="#009900">insert</font></b>(HashTable ht, Item it)
+{
+   assert(ht-&gt;nitems &lt; ht-&gt;nslots);
+   int N = ht-&gt;nslots;
+   Item *a = ht-&gt;items;
+   Key k = key(it);
+   int i, j, h = hash(k,N);
+   for (j = 0; j &lt; N; j++) {
+      i = (h+j)%N;
+      if (a[i] == NoItem) break;
+      if (eq(k,key(a[i]))) break;
+   }
+   if (a[i] == NoItem) ht-&gt;nitems++;
+   a[i] = it;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Linear Probing</span></td><td align="right"><small>63/75</small></td></tr></tbody></table>
+</p><p>
+Search function for linear probing:
+</p><p></p><pre>Item *<b><font color="#009900">search</font></b>(HashTable ht, Key k)
+{
+   int N = ht-&gt;nslots;
+   Item *a = ht-&gt;items;
+   int i, j, h = hash(k,N);
+   for (j = 0; j &lt; N; j++) {
+      i = (h+j)%N;
+      if (a[i] == NoItem) return NULL;
+      if (eq(k,key(a[i]))) return &amp;(a[i]);
+   }
+   return NULL;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Linear Probing</span></td><td align="right"><small>64/75</small></td></tr></tbody></table>
+</p><p>
+Search cost analysis:
+</p><ul>
+<li> cost to reach first <large><code>Item</code></large> is <i>O(1)</i>
+</li><li> subsequent cost depends how much we need to scan
+</li><li> affected by <em>load</em> &#945; = M/N &nbsp; <small>(i.e. how "full" is the table)</small>
+</li><li> Avg Cost for successful search = <i>0.5*(1 + 1/(1-&#945;))</i>
+</li><li> Avg Cost for unsuccessful search = <i>0.5*(1 + 1/(1-&#945;)<sup>2</sup>)</i>
+</li></ul>
+Example costs:
+<div class="center">
+<table cellpadding="8">
+<tbody><tr><td>load (&#945;)</td><td>1/2&nbsp;&nbsp;</td><td>2/3&nbsp;&nbsp;</td><td>3/4&nbsp;&nbsp;</td><td>9/10</td></tr>
+<tr><td>search hit</td><td>1.5</td><td>2.0</td><td>3.0</td><td>5.5</td></tr>
+<tr><td>search miss</td><td>2.5</td><td>5.0</td><td>8.5</td><td>55.5</td></tr>
+</tbody></table>
+</div>
+Assumes reasonably uniform data and good hash function.
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Linear Probing</span></td><td align="right"><small>65/75</small></td></tr></tbody></table>
+</p><p>
+Deletion slightly tricky for linear probing.
+</p><p>
+Need to ensure no <large><code>NoItem</code></large> in middle of "probe path" <br>
+<small>(i.e. previously relocated items moved to appropriate location)</small>
+</p><p>
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/hashing/hash-probe-delete-small.png]" src="Week%2011_files/hash-probe-delete-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Linear Probing</span></td><td align="right"><small>66/75</small></td></tr></tbody></table>
+</p><p>
+Delete function for linear probing:
+</p><p></p><pre>void <b><font color="#009900">delete</font></b>(HashTable ht, Key k)
+{
+   int N = ht-&gt;nslots;
+   Item *a = ht-&gt;items;
+   int i, j, h = hash(k,N);
+   for (j = 0; j &lt; N; j++) {
+      i = (h+j)%N;
+      if (a[i] == NoItem) return; <comment>// k not in table</comment>
+      if (eq(k,key(a[i]))) break;
+   }
+   a[i] = NoItem;
+   ht-&gt;nitems--;
+   <comment>// clean up probe path</comment>
+   j = i+1;
+   while (a[j] != NoItem) {
+      Item it = a[j];
+      a[j] = NoItem;
+      ht-&gt;nitems--;
+      <font color="#000099">insert</font>(ht, it);
+      j = (j+1)%N;
+   }
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 8: Linear Probing Example</span></td><td align="right"><small>67/75</small></td></tr></tbody></table>
+</p><p>
+Consider a linear-probed hash table
+</p><ul>
+<li> N = 10 table slots, hash(k) = k%10
+</li></ul>
+Show the result of inserting items with these keys
+<ol type="a">
+<li> <large><code>1, 2, 3, 4, 5, 6, 7, 8, 9</code></large>
+</li><li> <large><code>15, 6, 20, 3, 17, 14, 33, 5</code></large>
+</li></ol>
+into an initially empty table
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Exercise 9: Alternative Deletion Handling</span></td><td align="right"><small>68/75</small></td></tr></tbody></table>
+</p><p>
+To simplify <large><code>NoItem</code></large> deletion problem ...
+</p><ul>
+<li> leave key in place after deletion &nbsp; <small>(for search)</small>
+</li><li> flag it as being deleted &nbsp; <small>(for insert)</small>
+</li></ul>
+Give a data structure for this and re-implement functions.
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Linear Probing</span></td><td align="right"><small>69/75</small></td></tr></tbody></table>
+</p><p>
+A problem with linear probing: <em>clusters</em>
+</p><p>
+E.g. insert 5, 6, 15, 16, 7, 17, with hash = k%10
+</p><p></p><div class="center">
+<img alt="[Diagram:Pics/hashing/clustering-small.png]" src="Week%2011_files/clustering-small.png">
+</div><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Double Hashing</span></td><td align="right"><small>70/75</small></td></tr></tbody></table>
+</p><p>
+Double hashing improves on linear probing:
+</p><ul>
+<li> by using an increment which ...
+<ul>
+<li> is based on a secondary hash of the key
+</li><li> ensures that all elements are visited <br>
+	<small>(can be ensured by using an increment which is relatively prime to N)</small>
+</li></ul>
+</li><li> tends to eliminate clusters &#8658; shorter probe paths
+</li></ul>
+To generate relatively prime
+<ul>
+<li> set table size to prime e.g. N=127
+</li><li> <large><code>hash2()</code></large> in range [1..N1] where N1 &lt; 127 and prime
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Double Hashing</span></td><td align="right"><small>71/75</small></td></tr></tbody></table>
+</p><p>
+Concrete data structures for hashing via double hashing:
+</p><p></p><pre>typedef struct HashTabRep {
+   Item *items; <comment>// array of Items</comment>
+   int  nslots; <comment>// # elements in array</comment>
+   int  nitems; <comment>// # items stored in HashTable</comment>
+   <font color="#0000CC">int  nhash2;</font> <comment>// second hash mod</comment>
+} HashTabRep;
+
+#define hash2(k,N2) (((k)%N2)+1)
+
+HashTable newHashTable(int N)
+{
+   HashTabRep *new = malloc(sizeof(HashTabRep));
+   assert(new != NULL);
+   new-&gt;items = malloc(N*sizeof(Item));
+   assert(new-&gt;items != NULL);
+   for (int i = 0; i &lt; N; i++)
+      new-&gt;items[i] = NoItem;
+   new-&gt;nslots = N; new-&gt;nitems = 0;
+   <font color="#0000CC">new-&gt;nhash2 = findSuitablePrime(N);</font>
+   return new;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Double Hashing</span></td><td align="right"><small>72/75</small></td></tr></tbody></table>
+</p><p>
+Search function for double hashing:
+</p><p></p><pre>Item *<b><font color="#009900">search</font></b>(HashTable ht, Key k)
+{
+   int N = ht-&gt;nslots;
+   Item *data = ht-&gt;items;
+   int i, j, h = hash(k,N);
+   int incr = hash2(k,ht-&gt;nhash2);
+   for (j = 0, i = h; j &lt; N; j++) {
+      if (eq(k,key(data[i]) == 0)
+         return &amp;(data[i]);
+      i = (i+incr)%N;
+   }
+   return NULL;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Double Hashing</span></td><td align="right"><small>73/75</small></td></tr></tbody></table>
+</p><p>
+Insert function for double hashing:
+</p><p></p><pre>void <b><font color="#009900">insert</font></b>(HashTable ht, Item it)
+{
+   int N = ht-&gt;nslots;
+   Item *data = ht-&gt;items;
+   Key k = key(it);
+   int i, j, h = hash(k,N);
+   int incr = hash2(k,ht-&gt;nhash2);
+   for (j = 0; j &lt; N; j += incr) {
+      ix = (i+j)%N;
+      if (cmp(k,key(data[ix]) == 0)
+         break;
+      else if (data[ix] == NoItem)
+         break;
+   }
+   assert(j != N); <comment>// table full</comment>
+   if (data[ix] == NoItem) ht-&gt;nitems++;
+   data[ix] = it;
+}
+</pre><p>
+</p><p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="cont">... Double Hashing</span></td><td align="right"><small>74/75</small></td></tr></tbody></table>
+</p><p>
+Costs for double hashing:
+</p><p>
+</p><div class="center">
+<table cellpadding="8">
+<tbody><tr><td>load (&#945;)</td><td>1/2&nbsp;&nbsp;</td><td>2/3&nbsp;&nbsp;</td><td>3/4&nbsp;&nbsp;</td><td>9/10</td></tr>
+<tr><td>search hit</td><td>1.4</td><td>1.6</td><td>1.8</td><td>2.6</td></tr>
+<tr><td>search miss</td><td>1.5</td><td>2.0</td><td>3.0</td><td>5.5</td></tr>
+</tbody></table>
+</div>
+<p>
+Can be significantly better than linear probing
+</p><ul>
+<li> especially if table is heavily loaded
+</li></ul>
+<p></p><hr><p>
+<table width="100%" cellpadding="0">
+<tbody><tr valign="top"><td align="left"><span class="heading">Hashing Summary</span></td><td align="right"><small>75/75</small></td></tr></tbody></table>
+</p><p>
+Collision resolution approaches:
+</p><ul>
+<li> chaining: easy to implement, allows &#945; &gt; 1
+</li><li> linear probing: fast if &#945; &lt;&lt; 1, complex deletion
+</li><li> double hashing: faster than linear probing, esp for &#945; &#8773; 1
+</li></ul>
+Only chaining allows &#945; &gt; 1, but performance degrades once &#945; &gt; 1
+<p>
+Once <i>M</i> exceeds initial choice of <i>N</i>,
+</p><ul>
+<li> need to expand size of array (<i>N</i>)
+</li><li> problem: hash function relies on <i>N</i>, <br>
+	<small>so changing array size potentially requires rebuiling whole table</small>
+</li><li> dynamic hashing methods exist to avoid this
+</li></ul>
+<p></p><hr><p>
+<small><small>Produced: 9 Oct 2017</small></small>
+
+
+</p></li></body></html>

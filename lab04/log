@@ -1,0 +1,93 @@
+=== Testing for random input, size 100 ===
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+
+=== Testing for sorted input, size 100 ===
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+
+=== Testing for reverse input, size 100 ===
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+
+=== Testing for random input, size 1000 ===
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+
+=== Testing for sorted input, size 1000 ===
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+
+=== Testing for reverse input, size 1000 ===
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+
+=== Testing for random input, size 10000 ===
+0.25 seconds
+0.25 seconds
+0.24 seconds
+0.24 seconds
+0.24 seconds
+
+=== Testing for sorted input, size 10000 ===
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+0.00 seconds
+
+=== Testing for reverse input, size 10000 ===
+0.21 seconds
+0.20 seconds
+0.21 seconds
+0.21 seconds
+0.21 seconds
+
+=== Testing for random input, size 100000 ===
+29.25 seconds
+29.22 seconds
+29.36 seconds
+29.33 seconds
+29.48 seconds
+
+=== Testing for sorted input, size 100000 ===
+0.01 seconds
+0.01 seconds
+0.01 seconds
+0.01 seconds
+0.01 seconds
+
+=== Testing for reverse input, size 100000 ===
+21.01 seconds
+20.96 seconds
+20.98 seconds
+20.90 seconds
+20.98 seconds
+
+=== Testing for random input, size 1000000 ===
+Command terminated by signal 2
+58.92 seconds
+Command terminated by signal 2
+5.50 seconds
+Command terminated by signal 2
+2.91 seconds
+Command terminated by signal 2
+4.76 seconds
